@@ -5,11 +5,12 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
 def doesSensorExistById(sensorId: int) -> dict:
     res = getSensorDao(sensorId)
+    print(res)
     return True if res is not None else False
 
 def postSensorService(sensor: Sensor) -> None:
-    if doesSensorExistById(sensor.id):
-        postSensorDao(sensor)
+    if not doesSensorExistById(sensor.id):
+        return postSensorDao(sensor)
     
     raise HTTPException(status_code=HTTP_409_CONFLICT, detail="Sensor ID Already Exists")
 
@@ -18,4 +19,4 @@ def getSensorService(sensorId: int) -> dict:
     if res is not None:
         return dict(res)
     
-    raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Sensor not Found")
+    raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=f"Sensor ID {sensorId} not Found")

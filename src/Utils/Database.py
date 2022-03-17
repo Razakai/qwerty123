@@ -16,7 +16,7 @@ class Database():
     def createTables(self):
         cursor = self.db.cursor()
         cursor.execute("create table sensor (id integer PRIMARY key, country varchar2(255), city varchar2(255))")
-        cursor.execute("create table metrics (id integer PRIMARY KEY AUTOINCREMENT, sensorId int not null, temperature float not null, humidity float not null, timestamp DATE, FOREIGN KEY (sensorId) REFERENCES sensor(id))")
+        cursor.execute("create table metrics (id integer PRIMARY KEY AUTOINCREMENT, sensor_id int not null, temperature float not null, humidity float not null, timestamp int not null, FOREIGN KEY (sensor_id) REFERENCES sensor(id))")
         self.db.commit()
 
     def execute(self, query, isMany, values):
@@ -28,6 +28,7 @@ class Database():
             return cursor.execute(query, values)
 
         except Exception as e:
+            print(e)
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Database Error")
 
         finally:

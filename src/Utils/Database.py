@@ -1,6 +1,6 @@
 import sqlite3
 from fastapi import HTTPException
-from starlette.status import HTTP_409_CONFLICT, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 class Database():
     def __init__(self):
@@ -28,7 +28,7 @@ class Database():
             return cursor.execute(query, values)
 
         except Exception as e:
-            raise HTTPException(status_code=HTTP_409_CONFLICT, detail="Conflicting database entry")
+            raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Database Error")
 
         finally:
             self.db.commit()

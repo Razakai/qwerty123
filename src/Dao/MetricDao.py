@@ -5,3 +5,4 @@ from datetime import datetime
 def postMetricsDao(metrics: Metrics) -> None:
     query = "INSERT into metrics VALUES (id, :sensorId, :temperature, :humidity, :timestamp)"
     values = {"sensorId": metrics.sensorId, "temperature": metrics.temperature, "humidity": metrics.humidity, "timestamp": datetime.utcnow()}
+    database.execute(query, False, values)

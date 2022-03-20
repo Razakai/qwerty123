@@ -8,6 +8,13 @@ def test_post_sensor():
         assert res.status_code == 201
 
 
+def test_post_sensor_partial_data():
+    with TestClient(app) as client:
+        res = client.post('/sensor', json={"id": "1"})
+
+        assert res.status_code == 201
+
+
 def test_post_sensor_bad_request():
     with TestClient(app) as client:
         res = client.post('/sensor', json={"country": "Ireland", "city": "Cork"})

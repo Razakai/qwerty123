@@ -10,7 +10,7 @@ from src.Service.MetricService import postMetricsService, getMetricsService
 app = FastAPI()
 
 @app.get('/sensor/{id}', status_code=HTTP_200_OK)
-def getSensor(id: int):
+def getSensor(id: str):
     return {'sensor': getSensorService(id)}
 
 @app.post('/sensor', status_code=HTTP_201_CREATED)

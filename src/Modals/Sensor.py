@@ -3,6 +3,6 @@ from pydantic import BaseModel
 
 
 class Sensor(BaseModel):
-    id: int
+    id: str
     country: Optional[str] = None
     city: Optional[str] = None

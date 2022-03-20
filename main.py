@@ -24,11 +24,11 @@ def postMetrics(metrics: Metrics):
 
 @app.get('/metrics', status_code=HTTP_200_OK)
 def getSensorMetrics(
-    sensor_id: Optional[List[int]] = Query(default=None),
-    exclude_temperature: Optional[bool] = Query(default=False), 
-    exclude_humidity: Optional[bool] = Query(default=False),
+    sensor_id: Optional[List[str]] = Query(default=None),
+    exclude_temperature: bool = False, 
+    exclude_humidity: bool = False,
     date_range: Optional[int] = Query(default=None, ge=1, le=30)):
-    
+    print(type(exclude_temperature), exclude_temperature)
     return {"metrics": getMetricsService(sensor_id, exclude_temperature, exclude_humidity, date_range)}
 
 

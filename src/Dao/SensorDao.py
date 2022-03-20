@@ -8,8 +8,8 @@ def postSensorDao(sensor: Sensor) -> None:
     res = database.execute(query=query, values=values, isMany=False)
     print(res.lastrowid)
 
-def getSensorDao(sensorId: int) -> Sensor:
+def getSensorDao(sensor_id: int) -> Sensor:
     query = "SELECT * from sensor where id = :id"
-    values = {"id": sensorId}
+    values = {"id": sensor_id}
     
     return database.fetch(query, True, values)

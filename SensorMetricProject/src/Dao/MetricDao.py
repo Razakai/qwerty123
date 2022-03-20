@@ -1,7 +1,7 @@
 from src.Utils.Database import database
 from src.Modals.Metrics import Metrics
 from datetime import datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional
 import re
 
 def postMetricsDao(metrics: Metrics) -> None:

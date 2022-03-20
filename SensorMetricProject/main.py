@@ -28,7 +28,6 @@ def getSensorMetrics(
     exclude_temperature: bool = False, 
     exclude_humidity: bool = False,
     date_range: Optional[int] = Query(default=None, ge=1, le=30)):
-    print(type(exclude_temperature), exclude_temperature)
     return {"metrics": getMetricsService(sensor_id, exclude_temperature, exclude_humidity, date_range)}
 
 

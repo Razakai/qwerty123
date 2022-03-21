@@ -1,14 +1,15 @@
 from src.Modals.Sensor import Sensor
-from src.Dao.SensorDao import postSensorDao, getSensorDao
+from src.Dao.SensorDao import postSensorDao, getSensorDao, doSensorsExistByIdsDao
+from typing import List
 from fastapi import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
-def doesSensorExistById(sensor_id: str) -> dict:
-    res = getSensorDao(sensor_id)
-    return True if res is not None else False
+def doSensorsExistByIds(sensor_id: List[str]) -> list:
+    return doSensorsExistByIdsDao(sensor_id)
+    
 
 def postSensorService(sensor: Sensor) -> None:
-    if not doesSensorExistById(sensor.id):
+    if len(doSensorsExistByIds([sensor.id])) == 1:
         return postSensorDao(sensor)
     
     raise HTTPException(status_code=HTTP_409_CONFLICT, detail="Sensor ID Already Exists")

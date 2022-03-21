@@ -1,5 +1,6 @@
 import sqlite3
 from fastapi import HTTPException
+from typing import Optional, Any
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 class Database():
@@ -19,13 +20,13 @@ class Database():
         cursor.execute("create table metrics (id integer PRIMARY KEY AUTOINCREMENT, sensor_id varchar2(255) not null, temperature float not null, humidity float not null, timestamp int not null, FOREIGN KEY (sensor_id) REFERENCES sensor(id))")
         self.db.commit()
 
-    def execute(self, query, isMany, values):
+    def executeDB(self, query, isMany, values):
         cursor = self.db.cursor()
         try:
             if isMany:
-                return cursor.executemany(query, values)
+                return cursor.executemany(query, values) if values is not None else cursor.executemany(query)
 
-            return cursor.execute(query, values)
+            return cursor.execute(query, values) if values is not None else cursor.execute(query)
 
         except Exception as e:
             print('error', e)
@@ -34,14 +35,14 @@ class Database():
         finally:
             self.db.commit()
 
-    def fetch(self, query, isOne, values):
+    def fetchDB(self, query, isOne, values):
         cursor = self.db.cursor()
 
         try:
             if isOne:
-                return cursor.execute(query, values).fetchone()
+                return cursor.execute(query, values).fetchone() if values is not None else cursor.execute(query).fetchone()
 
-            return cursor.execute(query, values).fetchall()
+            return cursor.execute(query, values).fetchall() if values is not None else cursor.execute(query).fetchall()
 
         except Exception as e:
             print('error', e)
@@ -57,8 +58,8 @@ def connectDatabase():
 def disconnectDatabase():
     database.disconnectDB()
 
-def execute(query, isMany, values=None) -> int:
-    return database.execute(query=query, isMany=isMany, values=values)
+def execute(query, isMany, values:Optional[Any]=None) -> int:
+    return database.executeDB(query, isMany, values)
 
 def fetch(query, isOne, values=None) -> list or dict:
-    return database.fetch(query, isOne, values)
+    return database.fetchDB(query, isOne, values)

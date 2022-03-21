@@ -2,14 +2,16 @@ from src.Dao.MetricDao import postMetricsDao, getMetricsDao, getRecentMetricsDao
 from typing import List, Optional
 from src.Modals.Metrics import Metrics
 from fastapi import HTTPException
-from src.Service.SensorService import getSensorService
+from src.Service.SensorService import doSensorsExistByIds
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from datetime import datetime, timedelta
 import re
 
 def postMetricsService(metrics: Metrics) -> None:
-    if getSensorService(metrics.sensor_id):
-        postMetricsDao(metrics)
+    if len(doSensorsExistByIds([metrics.sensor_id])) == 0:
+        return postMetricsDao(metrics)
+
+    raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=f"Sensor ID: {metrics.sensor_id} does not exist")
 
 def getMetricsService(
     sensorList: Optional[List[str]], 
@@ -26,8 +28,12 @@ def getMetricsService(
     
     # check if sensor ID's passed in are present
     if sensorList is not None:
-        for id in sensorList:
-            getSensorService(id)
+        badQuerySensor = doSensorsExistByIds(sensorList)
+        if len(badQuerySensor) > 0:
+            badIds = []
+            for row in badQuerySensor:
+                badIds.append(row["id"])
+            raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=f"Given sensor Id's do not exist: {', '.join(badIds)}") #{', '.join([x for x in badSensorIds])}
 
     
     if dateRange is not None:

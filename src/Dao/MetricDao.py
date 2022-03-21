@@ -1,4 +1,4 @@
-from src.Utils.Database import database
+from src.Utils.Database import fetch, execute
 from src.Modals.Metrics import Metrics
 from datetime import datetime
 from typing import List, Optional
@@ -11,7 +11,7 @@ def postMetricsDao(metrics: Metrics) -> None:
     
     query = "INSERT into metrics (sensor_id, temperature, humidity, timestamp) VALUES (:sensor_id, :temperature, :humidity, :timestamp)"
     values = {"sensor_id": metrics.sensor_id, "temperature": metrics.temperature, "humidity": metrics.humidity, "timestamp": timestamp}
-    database.execute(query, False, values)
+    execute(query, False, values)
 
 
 def getRecentMetricsDao(
@@ -38,7 +38,7 @@ def getRecentMetricsDao(
     if sensorList is not None:
         values.extend(sensorList)
    
-    return database.fetch(query=query, isOne=False, values=values)
+    return fetch(query=query, isOne=False, values=values)
 
 def getMetricsDao(
     dateFrom: int,
@@ -65,5 +65,5 @@ def getMetricsDao(
     if sensorList is not None:
         values.extend(sensorList)
     
-    return database.fetch(query=query, isOne=False, values=values)
+    return fetch(query=query, isOne=False, values=values)
    

@@ -33,7 +33,7 @@ class Database():
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Database Error")
 
         finally:
-            self.db.commit()
+            cursor.close()
 
     def fetchDB(self, query, isOne, values):
         cursor = self.db.cursor()
@@ -48,6 +48,8 @@ class Database():
             print('error', e)
             raise HTTPException(status_code=HTTP_500_INTERNAL_SERVER_ERROR, detail="Database Error")
         
+        finally:
+            cursor.close()
 
 database = Database()
 
@@ -58,8 +60,8 @@ def connectDatabase():
 def disconnectDatabase():
     database.disconnectDB()
 
-def execute(query, isMany, values:Optional[Any]=None) -> int:
+def execute(query: str, isMany: bool, values: Optional[Any]=None) -> None:
     return database.executeDB(query, isMany, values)
 
-def fetch(query, isOne, values=None) -> list or dict:
+def fetch(query: str, isOne: bool, values: Optional[Any]=None) -> list:
     return database.fetchDB(query, isOne, values)

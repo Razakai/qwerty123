@@ -28,6 +28,8 @@ def getMetricsService(
     
     # check if sensor ID's passed in are present
     if sensorList is not None:
+        # remove any duplicates
+        sensorList = list(set(sensorList))
         badQuerySensor = doSensorsExistByIds(sensorList)
         if len(badQuerySensor) > 0:
             badIds = []
@@ -37,25 +39,14 @@ def getMetricsService(
 
     
     if dateRange is not None:
-        # using full date including miliseconds is toolarge for sqlite
+        # using full date excluding miliseconds as too large for sqlite
         dateFrom = str(datetime.utcnow() - timedelta(days=dateRange)).split('.')[0]
         dateFrom = int(re.sub('[^0-9]', '', dateFrom))
-        for row in getMetricsDao(dateFrom=dateFrom, sensorList=sensorList):
-            row = dict(row)
-            if excludeTemperature:
-                row.pop('AverageTemperature', None)
-            if excludeHumidity:
-                row.pop('AverageHumidity', None)
-            data.append(row)
-
+        
+        data = getMetricsDao(dateFrom=dateFrom, sensorList=sensorList, excludeTemperature=excludeTemperature, excludeHumidity=excludeHumidity)
+    
     else:
-        for row in getRecentMetricsDao(sensorList=sensorList):
-            row = dict(row)
-            if excludeTemperature:
-                row.pop('temperature', None)
-            if excludeHumidity:
-                row.pop('humidity', None)
-            data.append(row)
+        data = getRecentMetricsDao(sensorList=sensorList, excludeTemperature=excludeTemperature, excludeHumidity=excludeHumidity)
     
     if len(data) > 0:
         return data

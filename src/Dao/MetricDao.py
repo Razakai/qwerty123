@@ -5,7 +5,7 @@ from typing import List, Optional
 import re
 
 def postMetricsDao(metrics: Metrics) -> None:
-    # using full date including miliseconds is toolarge for sqlite
+    # using full date excluding miliseconds as too large for sqlite
     currentDate = str(datetime.utcnow()).split('.')[0]
     timestamp = int(re.sub('[^0-9]', '', currentDate))
     
@@ -15,12 +15,14 @@ def postMetricsDao(metrics: Metrics) -> None:
 
 
 def getRecentMetricsDao(
+    excludeTemperature: bool,
+    excludeHumidity: bool,
     sensorList: Optional[List[str]] = None) -> list:
 
     query = f"""
     SELECT 
-    met1.temperature,
-    met1.humidity,
+    {"met1.temperature," if not excludeTemperature else ""}
+    {"met1.humidity," if not excludeHumidity else ""}
     met1.sensor_id
     FROM metrics met1
     WHERE met1.id = (SELECT met2.id
@@ -42,12 +44,14 @@ def getRecentMetricsDao(
 
 def getMetricsDao(
     dateFrom: int,
+    excludeTemperature: bool,
+    excludeHumidity: bool,
     sensorList: Optional[List[str]] = []) -> list:
     
     query = f"""
     SELECT 
-    avg(temperature) AS AverageTemperature,
-    avg(humidity) AS AverageHumidity,
+    {"avg(temperature) AS AverageTemperature," if not excludeTemperature else ""}
+    {"avg(humidity) AS AverageHumidity," if not excludeHumidity else ""}
     sensor_id
     FROM metrics
     WHERE 

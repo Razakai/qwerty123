@@ -2,6 +2,6 @@ from pydantic import BaseModel
 
 
 class Metrics(BaseModel):
-    sensor_id: int
+    sensor_id: str
     temperature: float
     humidity: float

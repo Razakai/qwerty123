@@ -9,9 +9,11 @@ from src.Service.MetricService import postMetricsService, getMetricsService
 
 app = FastAPI()
 
+
 @app.get('/sensor/{id}', status_code=HTTP_200_OK)
 def getSensor(id: str):
     return {'sensor': getSensorService(id)}
+
 
 @app.post('/sensor', status_code=HTTP_201_CREATED)
 def postSensor(sensor: Sensor):
@@ -22,19 +24,20 @@ def postSensor(sensor: Sensor):
 def postMetrics(metrics: Metrics):
     postMetricsService(metrics)
 
+
 @app.get('/metrics', status_code=HTTP_200_OK)
 def getSensorMetrics(
-    sensor_id: Optional[List[str]] = Query(default=None),
-    exclude_temperature: bool = False, 
-    exclude_humidity: bool = False,
-    date_range: Optional[int] = Query(default=None, ge=1, le=30)):
+        sensor_id: Optional[List[str]] = Query(default=None),
+        exclude_temperature: bool = False,
+        exclude_humidity: bool = False,
+        date_range: Optional[int] = Query(default=None, ge=1, le=30)):
     return {"metrics": getMetricsService(sensor_id, exclude_temperature, exclude_humidity, date_range)}
-
 
 
 @app.on_event("startup")
 def createDatabaseConnection():
     connectDatabase()
+
 
 @app.on_event("shutdown")
 def disconnectDatabaseConnection():

@@ -1,4 +1,4 @@
-Python version: Python version >= 3.6
+Python version: Python version >= 3.6.1 (developed using 3.8)
 
 download requirements
 

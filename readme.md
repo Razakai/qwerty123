@@ -12,7 +12,7 @@ start server:
 uvicorn main:app --reload
 ```
 
-run tests:
+run tests (Once server is not running):
 
 ```
 python -m pytest tests/
